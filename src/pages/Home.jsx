@@ -6,6 +6,9 @@ import '../styles/header.css'
 import '../styles/hero.css'
 import '../styles/categories.css'
 
+import FeaturedProducts from '../components/FeaturedProducts'
+import '../styles/products.css'
+
 function Home() {
   return (
     <>
@@ -14,6 +17,7 @@ function Home() {
       <main>
         <Hero />
         <Categories />
+        <FeaturedProducts />
       </main>
     </>
   )
