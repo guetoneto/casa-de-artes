@@ -1,14 +1,14 @@
 import Header from '../components/Header'
+import Hero from '../components/Hero'
 import '../styles/header.css'
+import '../styles/hero.css'
 
 function Home() {
   return (
     <>
       <Header />
-
       <main>
-        <h1>Casa de Artes</h1>
-        <p>Catálogo virtual em construção.</p>
+        <Hero />
       </main>
     </>
   )
