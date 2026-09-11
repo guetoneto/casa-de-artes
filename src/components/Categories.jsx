@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 const categories = [
   {
     id: 'artisticos',
@@ -6,7 +8,7 @@ const categories = [
     description:
       'Tintas, pincéis, telas, materiais para desenho e tudo para transformar ideias em arte.',
     accent: 'blue',
-    link: '#artisticos',
+    link: '/produtos-artisticos',
   },
   {
     id: 'papelaria',
@@ -15,7 +17,7 @@ const categories = [
     description:
       'Cadernos, canetas, papéis e materiais para estudar, criar, organizar e presentear.',
     accent: 'red',
-    link: '#papelaria',
+    link: '/papelaria',
   },
   {
     id: 'escritorio',
@@ -24,7 +26,7 @@ const categories = [
     description:
       'Organização, arquivo, escrita e acessórios para deixar o trabalho mais funcional.',
     accent: 'green',
-    link: '#escritorio',
+    link: '/escritorio',
   },
 ]
 
@@ -46,10 +48,10 @@ function Categories() {
 
         <div className="categories-grid">
           {categories.map((category) => (
-            <a
-              className={`category-card category-${category.accent}`}
-              href={category.link}
-              key={category.id}
+            <Link
+                className={`category-card category-${category.accent}`}
+                to={category.link}
+                key={category.id}
             >
               <span className="category-number">{category.number}</span>
 
@@ -61,7 +63,7 @@ function Categories() {
                   Explorar categoria <span aria-hidden="true">→</span>
                 </span>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>
