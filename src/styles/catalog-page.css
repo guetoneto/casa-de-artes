@@ -1,0 +1,97 @@
+.catalog-page {
+  padding: 80px 24px 100px;
+  min-height: 70vh;
+}
+
+.catalog-container {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+}
+
+.catalog-heading {
+  max-width: 720px;
+  margin-bottom: 56px;
+}
+
+.catalog-heading h1 {
+  margin: 10px 0 18px;
+  color: var(--color-brown);
+  font-size: clamp(2.6rem, 5vw, 4.5rem);
+  line-height: 1;
+}
+
+.catalog-heading p {
+  margin: 0;
+  color: var(--color-text-soft);
+  font-size: 1.08rem;
+  line-height: 1.7;
+}
+
+.catalog-brands-title {
+  margin: 0 0 24px;
+  color: var(--color-brown);
+  font-size: clamp(1.7rem, 3vw, 2.3rem);
+}
+
+.catalog-brands-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.catalog-brand-card {
+  min-height: 160px;
+  padding: 26px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+
+  background: var(--color-paper-light);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.catalog-brand-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 14px 32px rgba(74, 39, 20, 0.09);
+}
+
+.catalog-brand-card img {
+  width: 100%;
+  max-width: 170px;
+  height: 75px;
+  object-fit: contain;
+}
+
+.catalog-brand-card strong {
+  color: var(--color-brown);
+  font-size: 1.15rem;
+  text-align: center;
+}
+
+.catalog-message {
+  color: var(--color-text-soft);
+}
+
+@media (max-width: 900px) {
+  .catalog-brands-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .catalog-page {
+    padding: 60px 20px 80px;
+  }
+
+  .catalog-brands-grid {
+    grid-template-columns: 1fr;
+  }
+}
