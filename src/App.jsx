@@ -5,6 +5,8 @@ import Home from './pages/Home'
 import ArtisticProducts from './pages/ArtisticProducts'
 import Stationery from './pages/Stationery'
 import Office from './pages/Office'
+import BrandProducts from './pages/BrandProducts'
+import ProductDetails from './pages/ProductDetails'
 
 function App() {
   return (
@@ -16,8 +18,18 @@ function App() {
             path="/produtos-artisticos"
             element={<ArtisticProducts />}
           />
-          <Route path="/papelaria" element={<Stationery />} />
-          <Route path="/escritorio" element={<Office />} />
+          <Route path="/papelaria" 
+          element={<Stationery />} 
+          />
+          <Route path="/escritorio" 
+          element={<Office />} 
+          />
+          <Route path="/:categorySlug/:brandSlug"
+          element={<BrandProducts />}
+          />
+          <Route path="/:categorySlug/:brandSlug/:productSlug"
+          element={<ProductDetails />}
+          />
         </Route>
       </Routes>
     </BrowserRouter>

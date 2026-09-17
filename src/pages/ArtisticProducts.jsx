@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { getBrandsByCategory } from '../services/catalogService'
 
 import '../styles/catalog-page.css'
@@ -64,23 +65,25 @@ function ArtisticProducts() {
           {!loading && !error && (
             <div className="catalog-brands-grid">
               {brands.map((brand) => (
-                <article
+                <Link
                   className="catalog-brand-card"
                   key={brand.id}
+                  to={`/produtos-artisticos/${brand.slug}`}
+                  aria-label={`Ver produtos ${brand.name}`}
                 >
                   {brand.logo_url ? (
                     <img
-                      src={brand.logo_url}
-                      alt={brand.name}
-                      loading="lazy"
-                    />
+                     src={brand.logo_url}
+                     alt={brand.name}
+                     loading="lazy"
+                   />
                   ) : (
                     <strong>{brand.name}</strong>
                   )}
 
                   <strong>{brand.name}</strong>
-                </article>
-              ))}
+              </Link>
+          ))}
             </div>
           )}
         </section>
