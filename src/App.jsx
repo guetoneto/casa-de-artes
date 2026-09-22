@@ -7,6 +7,7 @@ import Stationery from './pages/Stationery'
 import Office from './pages/Office'
 import BrandProducts from './pages/BrandProducts'
 import ProductDetails from './pages/ProductDetails'
+import AdminProducts from './pages/AdminProducts'
 
 function App() {
   return (
@@ -29,6 +30,9 @@ function App() {
           />
           <Route path="/:categorySlug/:brandSlug/:productSlug"
           element={<ProductDetails />}
+          />
+          <Route path="/admin/produtos"
+          element={<AdminProducts />}
           />
         </Route>
       </Routes>
