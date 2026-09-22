@@ -214,6 +214,17 @@
   cursor: pointer;
 }
 
+.product-option-button:hover {
+  border-color: var(--color-brown);
+}
+
+.product-option-button.is-selected {
+  background: var(--color-brown);
+  border-color: var(--color-brown);
+  color: var(--color-paper-light);
+  font-weight: 600;
+}
+
 .product-stock {
   margin-top: 14px;
   color: var(--color-text-soft);

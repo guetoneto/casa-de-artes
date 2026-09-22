@@ -115,16 +115,39 @@ function ProductDetails() {
 
                 <div className="product-option-buttons">
                   {colorOption.product_option_values.map(
-                    (optionValue) => (
-                      <button
-                        type="button"
-                        key={optionValue.id}
-                        className="product-option-button"
-                      >
-                        {optionValue.value}
-                      </button>
-                    )
-                  )}
+  (optionValue) => {
+    const variant =
+      product.product_variants?.find(
+        (item) =>
+          item.active &&
+          item.variant_option_values?.some(
+            (relation) =>
+              relation.option_value_id ===
+              optionValue.id
+          )
+      )
+
+    const isSelected =
+      selectedVariant?.id === variant?.id
+
+    return (
+      <button
+        type="button"
+        key={optionValue.id}
+        className={`product-option-button ${
+          isSelected ? 'is-selected' : ''
+        }`}
+        onClick={() => {
+          if (variant) {
+            setSelectedVariant(variant)
+          }
+        }}
+      >
+        {optionValue.value}
+      </button>
+    )
+  }
+)}
                 </div>
               </div>
             )}
