@@ -163,6 +163,11 @@ function ProductDetails() {
                 )}
               </div>
             )}
+            {selectedVariant?.barcode && (
+              <p className="product-barcode">
+                Código de barras: {selectedVariant.barcode}
+              </p>
+            )}
           </div>
         </section>
       </div>
