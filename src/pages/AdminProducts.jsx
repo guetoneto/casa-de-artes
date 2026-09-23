@@ -1,3 +1,5 @@
+import '../styles/admin-products.css'
+
 export default function AdminProducts() {
   return (
     <main className="admin-products">
