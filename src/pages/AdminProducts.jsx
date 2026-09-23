@@ -1,6 +1,16 @@
 import '../styles/admin-products.css'
 
+import { useNavigate } from 'react-router-dom'
+import { supabase } from '../services/supabase'
+
+
 export default function AdminProducts() {
+    const navigate = useNavigate()
+
+    async function handleLogout() {
+      await supabase.auth.signOut()
+      navigate('/admin/login')
+    }
   return (
     <main className="admin-products">
       <div className="admin-products-container">
@@ -11,6 +21,13 @@ export default function AdminProducts() {
             Gerencie os produtos e suas variantes do catálogo
             da Casa de Artes.
           </p>
+          <button
+           type="button"
+           className="admin-logout-button"
+           onClick={handleLogout}
+          >
+           Sair
+        </button>
         </header>
 
         <section className="admin-product-form">

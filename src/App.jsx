@@ -8,6 +8,8 @@ import Office from './pages/Office'
 import BrandProducts from './pages/BrandProducts'
 import ProductDetails from './pages/ProductDetails'
 import AdminProducts from './pages/AdminProducts'
+import AdminLogin from './pages/AdminLogin'
+import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
   return (
@@ -32,8 +34,17 @@ function App() {
           element={<ProductDetails />}
           />
           <Route path="/admin/produtos"
-          element={<AdminProducts />}
+          element={
+            <ProtectedRoute>
+              <AdminProducts />
+            </ProtectedRoute>
+          }
+        />
+          <Route path="/admin/login"
+          element={<AdminLogin />}
           />
+
+
         </Route>
       </Routes>
     </BrowserRouter>
