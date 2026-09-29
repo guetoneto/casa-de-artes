@@ -1,11 +1,50 @@
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+
 import '../styles/admin-products.css'
 
-import { useNavigate } from 'react-router-dom'
 import { supabase } from '../services/supabase'
+import {
+  getBrands,
+  getCategories,
+} from '../services/catalogService'
 
 
 export default function AdminProducts() {
     const navigate = useNavigate()
+    const [brands, setBrands] = useState([])
+const [categories, setCategories] = useState([])
+const [loadingCatalogData, setLoadingCatalogData] =
+  useState(true)
+const [catalogError, setCatalogError] = useState('')
+
+useEffect(() => {
+  async function loadCatalogData() {
+    try {
+      const [brandsData, categoriesData] =
+        await Promise.all([
+          getBrands(),
+          getCategories(),
+        ])
+
+      setBrands(brandsData)
+      setCategories(categoriesData)
+    } catch (error) {
+      console.error(
+        'Erro ao carregar dados do catálogo:',
+        error
+      )
+
+      setCatalogError(
+        'Não foi possível carregar marcas e categorias.'
+      )
+    } finally {
+      setLoadingCatalogData(false)
+    }
+  }
+
+  loadCatalogData()
+}, [])
 
     async function handleLogout() {
       await supabase.auth.signOut()
@@ -30,6 +69,10 @@ export default function AdminProducts() {
         </button>
         </header>
 
+        {catalogError && (
+          <p role="alert">{catalogError}</p>
+        )}
+        
         <section className="admin-product-form">
           <h2>Novo produto</h2>
 
@@ -44,18 +87,39 @@ export default function AdminProducts() {
             </label>
 
             <label>
-              Marca
-              <select disabled>
-                <option>Selecione uma marca</option>
-              </select>
-            </label>
+             Marca
+            <select disabled={loadingCatalogData}>
+             <option value="">
+              {loadingCatalogData
+                ? 'Carregando marcas...'
+                : 'Selecione uma marca'}
+             </option>
 
-            <label>
-              Categoria
-              <select disabled>
-                <option>Selecione uma categoria</option>
-              </select>
-            </label>
+             {brands.map((brand) => (
+               <option key={brand.id} value={brand.id}>
+                 {brand.name}
+               </option>
+             ))}
+          </select>
+         </label>
+
+              <label>
+           Categoria
+           <select disabled={loadingCatalogData}>
+             <option value="">
+               {loadingCatalogData
+                 ? 'Carregando categorias...'
+                 : 'Selecione uma categoria'}
+             </option>
+
+             {categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+             ))}
+          </select>
+         </label>
+          
           </div>
 
           <h3>Variante</h3>

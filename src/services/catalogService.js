@@ -167,4 +167,17 @@ export async function getProductDetails(productSlug) {
 
   return data
 }
+
+export async function getCategories() {
+  const { data, error } = await supabase
+    .from('categories')
+    .select('id, name, slug, parent_id, sort_order')
+    .order('sort_order', { ascending: true })
+
+  if (error) {
+    throw error
+  }
+
+  return data
+}
   
