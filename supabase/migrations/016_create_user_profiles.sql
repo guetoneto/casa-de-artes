@@ -15,6 +15,10 @@ create table if not exists public.user_profiles (
 alter table public.user_profiles
 enable row level security;
 
+grant select
+on table public.user_profiles
+to authenticated;
+
 create policy "Users can view own profile"
 on public.user_profiles
 for select
