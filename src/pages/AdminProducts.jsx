@@ -27,6 +27,7 @@ const [priceGroup, setPriceGroup] = useState('GR 1')
 const [price, setPrice] = useState('')
 const [stock, setStock] = useState('')
 const [formMessage, setFormMessage] = useState('')
+const [savingProduct, setSavingProduct] = useState(false)
 
 useEffect(() => {
   async function loadCatalogData() {
@@ -107,7 +108,7 @@ function validateForm() {
 
   return ''
 }
-function handleValidateForm() {
+async function handleSaveProduct() {
   const validationError = validateForm()
 
   if (validationError) {
@@ -115,11 +116,57 @@ function handleValidateForm() {
     return
   }
 
-  setFormMessage(
-    'Dados validados. O formulário está pronto para salvar.'
-  )
-}
+  const normalizedPrice = price
+    .trim()
+    .replace(',', '.')
 
+  setSavingProduct(true)
+  setFormMessage('Salvando produto...')
+
+  try {
+    const { data, error } = await supabase.rpc(
+      'create_admin_product',
+      {
+        p_name: productName.trim(),
+        p_brand_id: brandId,
+        p_category_id: categoryId,
+        p_color_name: colorName.trim(),
+        p_color_code: colorCode.trim() || null,
+        p_barcode: barcode.trim(),
+        p_price_group: priceGroup,
+        p_price: Number(normalizedPrice),
+        p_stock: Number(stock),
+      }
+    )
+
+    if (error) {
+      throw error
+    }
+
+    console.log('Produto criado:', data)
+
+    setFormMessage('Produto cadastrado com sucesso!')
+
+    setProductName('')
+    setBrandId('')
+    setCategoryId('')
+    setColorName('')
+    setColorCode('')
+    setBarcode('')
+    setPriceGroup('GR 1')
+    setPrice('')
+    setStock('')
+  } catch (error) {
+    console.error('Erro ao cadastrar produto:', error)
+
+    setFormMessage(
+      error.message ||
+        'Não foi possível cadastrar o produto.'
+    )
+  } finally {
+    setSavingProduct(false)
+  }
+}
     async function handleLogout() {
       await supabase.auth.signOut()
       navigate('/admin/login')
@@ -297,19 +344,16 @@ function handleValidateForm() {
 
           <button
             type="button"
-            onClick={handleValidateForm}
+            onClick={handleSaveProduct}
+            disabled={savingProduct}
           >
-           Validar produto
-          </button>
+  {savingProduct ? 'Salvando...' : 'Salvar produto'}
+</button>
           
           {formMessage && (
            <p role="status">{formMessage}</p>
          )}
 
-          <p>
-            Modo de preparação: o cadastro ainda não grava
-            informações no banco.
-          </p>
         </section>
       </div>
     </main>
