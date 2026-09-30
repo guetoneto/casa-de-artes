@@ -17,6 +17,9 @@ const [categories, setCategories] = useState([])
 const [loadingCatalogData, setLoadingCatalogData] =
   useState(true)
 const [catalogError, setCatalogError] = useState('')
+const [productName, setProductName] = useState('')
+const [brandId, setBrandId] = useState('')
+const [categoryId, setCategoryId] = useState('')
 
 useEffect(() => {
   async function loadCatalogData() {
@@ -77,48 +80,66 @@ useEffect(() => {
           <h2>Novo produto</h2>
 
           <div className="admin-form-grid">
-            <label>
-              Nome do produto
-              <input
-                type="text"
-                placeholder="Ex.: Tinta Acrílica Corfix 250ml"
-                disabled
-              />
-            </label>
+       <label>
+         Nome do produto
+         <input
+           type="text"
+           placeholder="Ex.: Tinta Acrílica Corfix 250ml"
+           value={productName}
+           onChange={(event) =>
+             setProductName(event.target.value)
+           }
+         />
+       </label>
 
             <label>
-             Marca
-            <select disabled={loadingCatalogData}>
-             <option value="">
-              {loadingCatalogData
-                ? 'Carregando marcas...'
-                : 'Selecione uma marca'}
-             </option>
+  Marca
+  <select
+    value={brandId}
+    onChange={(event) =>
+      setBrandId(event.target.value)
+    }
+    disabled={loadingCatalogData}
+  >
+    <option value="">
+      {loadingCatalogData
+        ? 'Carregando marcas...'
+        : 'Selecione uma marca'}
+    </option>
 
-             {brands.map((brand) => (
-               <option key={brand.id} value={brand.id}>
-                 {brand.name}
-               </option>
-             ))}
-          </select>
-         </label>
+    {brands.map((brand) => (
+      <option key={brand.id} value={brand.id}>
+        {brand.name}
+      </option>
+    ))}
+  </select>
+</label>
 
               <label>
-           Categoria
-           <select disabled={loadingCatalogData}>
-             <option value="">
-               {loadingCatalogData
-                 ? 'Carregando categorias...'
-                 : 'Selecione uma categoria'}
-             </option>
+  Categoria
+  <select
+    value={categoryId}
+    onChange={(event) =>
+      setCategoryId(event.target.value)
+    }
+    disabled={loadingCatalogData}
+  >
+    <option value="">
+      {loadingCatalogData
+        ? 'Carregando categorias...'
+        : 'Selecione uma categoria'}
+    </option>
 
-             {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-             ))}
-          </select>
-         </label>
+    {categories.map((category) => (
+      <option
+        key={category.id}
+        value={category.id}
+      >
+        {category.name}
+      </option>
+    ))}
+  </select>
+</label>
           
           </div>
 
