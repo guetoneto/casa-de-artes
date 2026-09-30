@@ -26,6 +26,7 @@ const [barcode, setBarcode] = useState('')
 const [priceGroup, setPriceGroup] = useState('GR 1')
 const [price, setPrice] = useState('')
 const [stock, setStock] = useState('')
+const [formMessage, setFormMessage] = useState('')
 
 useEffect(() => {
   async function loadCatalogData() {
@@ -54,6 +55,70 @@ useEffect(() => {
 
   loadCatalogData()
 }, [])
+
+function validateForm() {
+  if (!productName.trim()) {
+    return 'Informe o nome do produto.'
+  }
+
+  if (!brandId) {
+    return 'Selecione uma marca.'
+  }
+
+  if (!categoryId) {
+    return 'Selecione uma categoria.'
+  }
+
+  if (!colorName.trim()) {
+    return 'Informe a cor da variante.'
+  }
+
+  if (!barcode.trim()) {
+    return 'Informe o código de barras.'
+  }
+
+  if (!/^\d+$/.test(barcode.trim())) {
+    return 'O código de barras deve conter apenas números.'
+  }
+
+  const normalizedPrice = price
+    .trim()
+    .replace(',', '.')
+
+  const numericPrice = Number(normalizedPrice)
+
+  if (
+    !normalizedPrice ||
+    !Number.isFinite(numericPrice) ||
+    numericPrice < 0
+  ) {
+    return 'Informe um preço válido.'
+  }
+
+  const numericStock = Number(stock)
+
+  if (
+    stock === '' ||
+    !Number.isInteger(numericStock) ||
+    numericStock < 0
+  ) {
+    return 'Informe um estoque válido.'
+  }
+
+  return ''
+}
+function handleValidateForm() {
+  const validationError = validateForm()
+
+  if (validationError) {
+    setFormMessage(validationError)
+    return
+  }
+
+  setFormMessage(
+    'Dados validados. O formulário está pronto para salvar.'
+  )
+}
 
     async function handleLogout() {
       await supabase.auth.signOut()
@@ -122,30 +187,30 @@ useEffect(() => {
 </label>
 
               <label>
-  Categoria
-  <select
-    value={categoryId}
-    onChange={(event) =>
-      setCategoryId(event.target.value)
-    }
-    disabled={loadingCatalogData}
-  >
-    <option value="">
-      {loadingCatalogData
-        ? 'Carregando categorias...'
-        : 'Selecione uma categoria'}
-    </option>
+                Categoria
+                <select
+                  value={categoryId}
+                  onChange={(event) =>
+                  setCategoryId(event.target.value)
+                 }
+                 disabled={loadingCatalogData}
+                 >
+                 <option value="">
+                  {loadingCatalogData
+                  ? 'Carregando categorias...'
+                  : 'Selecione uma categoria'}
+                </option>
 
-    {categories.map((category) => (
-      <option
-        key={category.id}
-        value={category.id}
-      >
-        {category.name}
-      </option>
-    ))}
-  </select>
-</label>
+                 {categories.map((category) => (
+                  <option
+                   key={category.id}
+                   value={category.id}
+                  >
+                  {category.name}
+                  </option>
+                ))}
+                </select>
+              </label>
           
           </div>
 
@@ -230,9 +295,16 @@ useEffect(() => {
             </label>
           </div>
 
-          <button type="button" disabled>
-            Salvar produto
+          <button
+            type="button"
+            onClick={handleValidateForm}
+          >
+           Validar produto
           </button>
+          
+          {formMessage && (
+           <p role="status">{formMessage}</p>
+         )}
 
           <p>
             Modo de preparação: o cadastro ainda não grava
