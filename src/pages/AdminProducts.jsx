@@ -20,6 +20,12 @@ const [catalogError, setCatalogError] = useState('')
 const [productName, setProductName] = useState('')
 const [brandId, setBrandId] = useState('')
 const [categoryId, setCategoryId] = useState('')
+const [colorName, setColorName] = useState('')
+const [colorCode, setColorCode] = useState('')
+const [barcode, setBarcode] = useState('')
+const [priceGroup, setPriceGroup] = useState('GR 1')
+const [price, setPrice] = useState('')
+const [stock, setStock] = useState('')
 
 useEffect(() => {
   async function loadCatalogData() {
@@ -151,7 +157,10 @@ useEffect(() => {
               <input
                 type="text"
                 placeholder="Ex.: Azul Ultramar"
-                disabled
+                value={colorName}
+                onChange={(event) =>
+                  setColorName(event.target.value)
+                }
               />
             </label>
 
@@ -160,7 +169,10 @@ useEffect(() => {
               <input
                 type="text"
                 placeholder="Ex.: 68"
-                disabled
+                value={colorCode}
+                onChange={(event) =>
+                  setColorCode(event.target.value)
+                }
               />
             </label>
 
@@ -168,35 +180,53 @@ useEffect(() => {
               Código de barras
               <input
                 type="text"
+                inputMode="numeric"
                 placeholder="Ex.: 7896011706436"
-                disabled
+                value={barcode}
+                onChange={(event) =>
+                  setBarcode(event.target.value)
+                }
               />
             </label>
 
             <label>
               Grupo
-              <select disabled>
-                <option>GR 1</option>
-                <option>GR 2</option>
+              <select
+                value={priceGroup}
+                onChange={(event) =>
+                  setPriceGroup(event.target.value)
+                }
+               >
+                <option value="GR 1">GR 1</option>
+                <option value="GR 2">GR 2</option>
               </select>
+             </label>
+
+            <label>
+                Preço
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  placeholder="Ex.: 52,00"
+                  value={price}
+                  onChange={(event) =>
+                    setPrice(event.target.value)
+                  }
+                 />
             </label>
 
             <label>
-              Preço
-              <input
-                type="text"
-                placeholder="R$ 0,00"
-                disabled
-              />
-            </label>
-
-            <label>
-              Estoque
-              <input
-                type="number"
-                placeholder="0"
-                disabled
-              />
+                Estoque
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  placeholder="0"
+                  value={stock}
+                  onChange={(event) =>
+                    setStock(event.target.value)
+                  }
+                 />
             </label>
           </div>
 
