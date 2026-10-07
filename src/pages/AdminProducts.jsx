@@ -581,6 +581,24 @@ async function handleSaveProduct() {
     </label>
   </div>
 
+  {variantProductId && (
+  <div className="admin-selected-product">
+    <span>Variante será adicionada a</span>
+
+    <strong>
+      {brands.find(
+        (brand) => brand.id === variantBrandId
+      )?.name}
+    </strong>
+
+    <p>
+      {productsByBrand.find(
+        (product) => product.id === variantProductId
+      )?.name}
+    </p>
+  </div>
+)}
+
   <h3>Nova variante</h3>
 
 <div className="admin-form-grid">
