@@ -180,4 +180,29 @@ export async function getCategories() {
 
   return data
 }
+
+export async function getProductsByBrand(brandId) {
+  if (!brandId) {
+    return []
+  }
+
+  const { data, error } = await supabase
+    .from('products')
+    .select(`
+      id,
+      name,
+      slug,
+      brand_id,
+      active
+    `)
+    .eq('brand_id', brandId)
+    .eq('active', true)
+    .order('name', { ascending: true })
+
+  if (error) {
+    throw error
+  }
+
+  return data
+}
   
