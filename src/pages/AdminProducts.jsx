@@ -218,6 +218,28 @@ async function handleSaveVariant() {
     return
   }
 
+  const selectedProduct = productsByBrand.find(
+    (product) => product.id === variantProductId
+  )
+
+  const selectedBrand = brands.find(
+    (brand) => brand.id === variantBrandId
+  )
+
+  const confirmed = window.confirm(
+    `Confirma o cadastro desta variante?\n\n` +
+      `Marca: ${selectedBrand?.name}\n` +
+      `Produto: ${selectedProduct?.name}\n` +
+      `${optionName}: ${optionValue}\n` +
+      `Código: ${optionCode || 'Não informado'}\n` +
+      `Código de barras: ${variantBarcode}`
+  )
+
+  if (!confirmed) {
+    setVariantMessage('Cadastro cancelado.')
+    return
+  }
+
   const normalizedPrice = variantPrice
     .trim()
     .replace(',', '.')
@@ -246,9 +268,7 @@ async function handleSaveVariant() {
 
     console.log('Variante criada:', data)
 
-    setVariantMessage(
-      'Variante cadastrada com sucesso!'
-    )
+    setVariantMessage('Variante cadastrada com sucesso!')
 
     setOptionValue('')
     setOptionCode('')
@@ -320,7 +340,10 @@ async function handleSaveProduct() {
     setPrice('')
     setStock('')
   } catch (error) {
-    console.error('Erro ao cadastrar produto:', error)
+    console.error(
+      'Erro ao cadastrar produto:',
+      error
+    )
 
     setFormMessage(
       error.message ||
