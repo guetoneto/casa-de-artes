@@ -42,6 +42,10 @@ const [variantPriceGroup, setVariantPriceGroup] = useState('GR 1')
 const [variantPrice, setVariantPrice] = useState('')
 const [variantStock, setVariantStock] = useState('')
 const [savingVariant, setSavingVariant] = useState(false)
+const [productVariants, setProductVariants] = useState([])
+const [loadingVariants, setLoadingVariants] = useState(false)
+const [variantsError, setVariantsError] = useState('')
+const [deletingVariantId, setDeletingVariantId] = useState(null)
 
 useEffect(() => {
   async function loadCatalogData() {
@@ -105,6 +109,64 @@ useEffect(() => {
 
   loadProductsByBrand()
 }, [variantBrandId])
+
+async function loadProductVariants(productId) {
+  setProductVariants([])
+  setVariantsError('')
+
+  if (!productId) {
+    setLoadingVariants(false)
+    return
+  }
+
+  setLoadingVariants(true)
+
+  try {
+    const { data, error } = await supabase
+      .from('product_variants')
+      .select(`
+        id,
+        barcode,
+        price,
+        stock,
+        price_group,
+        is_default,
+        active,
+        sort_order,
+        variant_option_values (
+          product_option_values (
+            value,
+            color_code,
+            product_options (
+              name
+            )
+          )
+        )
+      `)
+      .eq('product_id', productId)
+      .order('sort_order', { ascending: true })
+
+    if (error) {
+      throw error
+    }
+
+    setProductVariants(data ?? [])
+    console.log('Variantes carregadas:', data)
+
+  } catch (error) {
+    console.error('Erro ao carregar variantes:', error)
+
+    setVariantsError(
+      error.message || 'Não foi possível carregar as variantes.'
+    )
+  } finally {
+    setLoadingVariants(false)
+  }
+}
+
+useEffect(() => {
+  loadProductVariants(variantProductId)
+}, [variantProductId])
 
 function validateForm() {
   if (!productName.trim()) {
@@ -210,6 +272,7 @@ function validateVariantForm() {
   return ''
 }
 
+
 async function handleSaveVariant() {
   const validationError = validateVariantForm()
 
@@ -288,6 +351,70 @@ async function handleSaveVariant() {
     )
   } finally {
     setSavingVariant(false)
+  }
+}
+
+async function handleDeleteVariant(variant) {
+  if (deletingVariantId) return
+
+  if (variant.is_default) {
+    setVariantsError(
+      'Não é permitido excluir a variante padrão.'
+    )
+    return
+  }
+
+  if (productVariants.length <= 1) {
+    setVariantsError(
+      'Não é permitido excluir a última variante.'
+    )
+    return
+  }
+
+  const option =
+    variant.variant_option_values?.[0]
+      ?.product_option_values
+
+  const selectedProduct = productsByBrand.find(
+    (product) => product.id === variantProductId
+  )
+
+  const confirmed = window.confirm(
+    `ATENÇÃO: Exclusão definitiva!\n\n` +
+    `Produto: ${selectedProduct?.name || 'Não identificado'}\n` +
+    `Variante: ${option?.value || 'Sem opção'}\n` +
+    `Código de barras: ${variant.barcode || 'Não informado'}\n\n` +
+    `Esta operação não poderá ser desfeita.\n\n` +
+    `Deseja realmente excluir esta variante?`
+  )
+
+  if (!confirmed) return
+
+  setDeletingVariantId(variant.id)
+  setVariantsError('')
+
+  try {
+    const { data, error } = await supabase.rpc(
+      'delete_admin_product_variant',
+      { p_variant_id: variant.id }
+    )
+
+    if (error) throw error
+
+    if (data !== true) {
+      throw new Error('A exclusão não foi confirmada pelo banco.')
+    }
+
+    await loadProductVariants(variantProductId)
+    setVariantMessage('Variante excluída com sucesso!')
+  } catch (error) {
+    console.error('Erro ao excluir variante:', error)
+
+    setVariantsError(
+      error.message || 'Não foi possível excluir a variante.'
+    )
+  } finally {
+    setDeletingVariantId(null)
   }
 }
 
@@ -622,6 +749,69 @@ async function handleSaveProduct() {
   </div>
 )}
 
+  {variantProductId && (
+  <div className="admin-variants-list">
+    <h3>Variantes cadastradas</h3>
+
+    {loadingVariants && <p>Carregando variantes...</p>}
+
+    {variantsError && (
+      <p role="alert">{variantsError}</p>
+    )}
+
+    {!loadingVariants &&
+      !variantsError &&
+      productVariants.length === 0 && (
+        <p>Nenhuma variante encontrada.</p>
+      )}
+
+    {!loadingVariants &&
+      !variantsError &&
+      productVariants.map((variant) => {
+        const option =
+          variant.variant_option_values?.[0]
+            ?.product_option_values
+
+        return (
+          <div key={variant.id} className="admin-variant-item">
+            <strong>{option?.value || 'Sem opção'}</strong>
+
+            <p>
+              Código da opção: {option?.color_code || '—'}
+            </p>
+
+            <p>Código de barras: {variant.barcode || '—'}</p>
+
+            <p>
+              Preço: R$ {Number(variant.price).toFixed(2)}
+            </p>
+
+            <p>Estoque: {variant.stock}</p>
+
+            <p>
+              {variant.is_default
+                ? 'Variante padrão'
+                : 'Variante adicional'}
+            </p>
+
+            {!variant.is_default && (
+  <button
+    type="button"
+    onClick={() => handleDeleteVariant(variant)}
+    disabled={deletingVariantId !== null || loadingVariants}
+    className="admin-delete-variant-button"
+  >
+    {deletingVariantId === variant.id
+      ? 'Excluindo...'
+      : 'Excluir variante'}
+  </button>
+)}
+          </div>
+        )
+      })}
+  </div>
+)}
+  
   <h3>Nova variante</h3>
 
 <div className="admin-form-grid">
